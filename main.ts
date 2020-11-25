@@ -1,16 +1,62 @@
+// 後退
 input.onGesture(Gesture.LogoUp, function () {
-    if (頁面 == 2) {
+    if (頁面 == 1) {
         radio.sendNumber(2)
     }
 })
+radio.onReceivedNumber(function (receivedNumber) {
+    if (receivedNumber == 1) {
+        bitbot.go(BBDirection.Forward, 60)
+    }
+    if (receivedNumber == 2) {
+        bitbot.go(BBDirection.Reverse, 60)
+    }
+    if (receivedNumber == 3) {
+        bitbot.rotatems(BBRobotDirection.Left, 60, 500)
+    }
+    if (receivedNumber == 3) {
+        bitbot.rotatems(BBRobotDirection.Left, 60, 500)
+    }
+    if (receivedNumber == 4) {
+        bitbot.rotatems(BBRobotDirection.Right, 60, 500)
+    }
+    if (receivedNumber == 5) {
+        bitbot.stop(BBStopMode.Coast)
+    }
+    if (receivedNumber == 6) {
+        for (let index = 0; index < 10; index++) {
+            bitbot.buzz(true)
+            basic.pause(100)
+            bitbot.buzz(false)
+            basic.pause(100)
+        }
+    }
+    if (receivedNumber == 7) {
+        距離循線()
+    }
+    if (receivedNumber == 8) {
+        距離 = bitbot.sonar(BBPingUnit.Centimeters)
+        basic.showNumber(距離)
+        radio.sendValue("a", 距離)
+    }
+    if (receivedNumber == 9) {
+        bitbot.stop(BBStopMode.Coast)
+    }
+})
+// 左轉
 input.onGesture(Gesture.TiltLeft, function () {
-    if (頁面 == 3) {
+    if (頁面 == 1) {
         radio.sendNumber(3)
     }
 })
+// 停下
 input.onButtonPressed(Button.A, function () {
     if (頁面 == 1) {
         radio.sendNumber(5)
+    }
+    // 循線
+    if (頁面 == 2) {
+        radio.sendNumber(7)
     }
 })
 function 循線 () {
@@ -52,31 +98,26 @@ function 循線 () {
         bitbot.go(BBDirection.Forward, 60)
     }
 }
+// 喇叭
 input.onGesture(Gesture.Shake, function () {
-    if (頁面 == 1) {
+    if (頁面 == 2) {
         radio.sendNumber(6)
     }
 })
-input.onGesture(Gesture.ScreenUp, function () {
-    if (頁面 == 2) {
-        radio.sendNumber(7)
-    }
-})
 function 距離循線 () {
-    循線()
-    if (bitbot.sonar(BBPingUnit.Centimeters) <= 10) {
-        bitbot.stop(BBStopMode.Coast)
-    } else {
+    while (bitbot.sonar(BBPingUnit.Centimeters) > 10) {
         循線()
     }
+    bitbot.stop(BBStopMode.Coast)
 }
+// 前進
 input.onGesture(Gesture.LogoDown, function () {
     if (頁面 == 1) {
         radio.sendNumber(1)
     }
 })
 input.onButtonPressed(Button.AB, function () {
-    if (頁面 < 5) {
+    if (頁面 < 2) {
         頁面 += 1
         basic.showNumber(頁面)
     } else {
@@ -84,18 +125,26 @@ input.onButtonPressed(Button.AB, function () {
         basic.showNumber(頁面)
     }
 })
+// 距離
 input.onButtonPressed(Button.B, function () {
     if (頁面 == 2) {
         radio.sendNumber(8)
     }
 })
+// 右轉
 input.onGesture(Gesture.TiltRight, function () {
-    if (頁面 == 4) {
+    if (頁面 == 1) {
         radio.sendNumber(4)
+    }
+})
+radio.onReceivedValue(function (name, value) {
+    if (name == "a") {
+        basic.showNumber(value)
     }
 })
 let 結束時間 = 0
 let 開始時間 = 0
+let 距離 = 0
 let 頁面 = 0
 radio.setGroup(4)
 頁面 = 1
